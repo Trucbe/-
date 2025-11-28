@@ -9,7 +9,7 @@ const Scene: React.FC = () => {
     <div className="w-full h-full bg-black">
       <Canvas
         camera={{ position: [0, 0, 15], fov: 45 }}
-        gl={{ antialias: false, alpha: false }}
+        gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
         dpr={[1, 2]} // Optimize for high DPI
       >
         <color attach="background" args={['#050505']} />
@@ -22,7 +22,8 @@ const Scene: React.FC = () => {
         <OrbitControls enablePan={false} enableZoom={true} minDistance={5} maxDistance={40} />
         
         {/* Post Processing for the "Magic" glow */}
-        <EffectComposer enableNormalPass={false}>
+        {/* disableNormalPass ensures we don't try to compute normals for particles which don't have faces */}
+        <EffectComposer disableNormalPass>
            <Bloom luminanceThreshold={0.2} mipmapBlur intensity={0.5} radius={0.4} />
         </EffectComposer>
       </Canvas>

@@ -19,7 +19,7 @@ const ParticleSystem: React.FC = () => {
   }, [positions]);
 
   useFrame((state, delta) => {
-    if (!pointsRef.current) return;
+    if (!pointsRef.current || !pointsRef.current.geometry) return;
 
     // Smooth lerp of expansion factor
     const target = gestureState.handsPresent ? gestureState.expansion : 0.2; // Idle breathe 0.2
@@ -34,13 +34,19 @@ const ParticleSystem: React.FC = () => {
     const expansion = gestureState.currentExpansion;
     const time = state.clock.getElapsedTime();
 
-    // Fix TS error: Cast to BufferAttribute to access .array
-    const positionsAttribute = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute;
+    // Access attributes safely
+    const geometry = pointsRef.current.geometry;
+    if (!geometry.attributes.position) return;
+    
+    const positionsAttribute = geometry.attributes.position as THREE.BufferAttribute;
     const array = positionsAttribute.array as Float32Array;
     
     // Animate points
     for (let i = 0; i < config.count; i++) {
       const idx = i * 3;
+      // Safety check for array bounds
+      if (idx + 2 >= array.length) break;
+
       const ox = originalPositions[idx];
       const oy = originalPositions[idx + 1];
       const oz = originalPositions[idx + 2];
@@ -49,9 +55,6 @@ const ParticleSystem: React.FC = () => {
       const noise = Math.sin(time * 0.5 + i * 0.1) * 0.1;
       
       // Calculate Expansion Direction
-      // Move away from center (0,0,0) based on expansion factor
-      // We multiply the position by (1 + expansion * factor)
-      
       const scale = 1 + (expansion * 1.5) + noise;
 
       // Rotation around Y axis for dynamic feel
@@ -71,16 +74,10 @@ const ParticleSystem: React.FC = () => {
     }
     
     positionsAttribute.needsUpdate = true;
-    
-    // Pulse color slightly
-    if (pointsRef.current.material instanceof THREE.PointsMaterial) {
-        // Simple opacity pulse
-        // pointsRef.current.material.opacity = 0.6 + Math.sin(time) * 0.2;
-    }
   });
 
   return (
-    <points ref={pointsRef}>
+    <points ref={pointsRef} frustumCulled={false}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
