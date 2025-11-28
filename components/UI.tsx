@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStore } from '../store';
 import { ShapeType } from '../types';
-import { Maximize2, Minimize2, Eye, EyeOff, Camera, Sliders } from 'lucide-react';
+import { Maximize2, Eye, EyeOff, Camera, Sliders } from 'lucide-react';
 
 const UI: React.FC = () => {
   const { config, setConfig, uiVisible, toggleUI, gestureState } = useStore();

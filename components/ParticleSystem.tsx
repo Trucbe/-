@@ -34,7 +34,8 @@ const ParticleSystem: React.FC = () => {
     const expansion = gestureState.currentExpansion;
     const time = state.clock.getElapsedTime();
 
-    const positionsAttribute = pointsRef.current.geometry.attributes.position;
+    // Fix TS error: Cast to BufferAttribute to access .array
+    const positionsAttribute = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute;
     const array = positionsAttribute.array as Float32Array;
     
     // Animate points

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, Stars } from '@react-three/drei';
+import { OrbitControls, Stars } from '@react-three/drei';
 import ParticleSystem from './ParticleSystem';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
@@ -22,7 +22,7 @@ const Scene: React.FC = () => {
         <OrbitControls enablePan={false} enableZoom={true} minDistance={5} maxDistance={40} />
         
         {/* Post Processing for the "Magic" glow */}
-        <EffectComposer disableNormalPass>
+        <EffectComposer enableNormalPass={false}>
            <Bloom luminanceThreshold={0.2} mipmapBlur intensity={0.5} radius={0.4} />
         </EffectComposer>
       </Canvas>

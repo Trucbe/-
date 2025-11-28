@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { ShapeType } from '../types';
 
 export const generateParticles = (shape: ShapeType, count: number): Float32Array => {
