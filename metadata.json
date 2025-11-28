@@ -1,0 +1,7 @@
+{
+  "name": "Particle Genesis",
+  "description": "A real-time interactive 3D particle system controlled by hand gestures using Computer Vision.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
