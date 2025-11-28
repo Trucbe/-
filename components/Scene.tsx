@@ -22,8 +22,8 @@ const Scene: React.FC = () => {
         <OrbitControls enablePan={false} enableZoom={true} minDistance={5} maxDistance={40} />
         
         {/* Post Processing for the "Magic" glow */}
-        {/* disableNormalPass ensures we don't try to compute normals for particles which don't have faces */}
-        <EffectComposer disableNormalPass>
+        {/* enableNormalPass={false} ensures we don't try to compute normals for particles which don't have faces */}
+        <EffectComposer enableNormalPass={false}>
            <Bloom luminanceThreshold={0.2} mipmapBlur intensity={0.5} radius={0.4} />
         </EffectComposer>
       </Canvas>
