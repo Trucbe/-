@@ -41,11 +41,14 @@ const ParticleSystem: React.FC = () => {
     const positionsAttribute = geometry.attributes.position as THREE.BufferAttribute;
     const array = positionsAttribute.array as Float32Array;
     
+    // Use the actual count from the attribute to avoid out-of-bounds access during hot-swaps
+    const count = positionsAttribute.count;
+
     // Animate points
-    for (let i = 0; i < config.count; i++) {
+    for (let i = 0; i < count; i++) {
       const idx = i * 3;
-      // Safety check for array bounds
-      if (idx + 2 >= array.length) break;
+      // Safety check for array bounds in case of mismatch between geometry and config state
+      if (idx + 2 >= array.length || idx + 2 >= originalPositions.length) break;
 
       const ox = originalPositions[idx];
       const oy = originalPositions[idx + 1];
@@ -78,7 +81,9 @@ const ParticleSystem: React.FC = () => {
 
   return (
     <points ref={pointsRef} frustumCulled={false}>
-      <bufferGeometry>
+      {/* Key is crucial here: it forces React to destroy and recreate the geometry 
+          when shape or count changes, preventing the "Buffer resize" error */}
+      <bufferGeometry key={`${config.shape}-${config.count}`}>
         <bufferAttribute
           attach="attributes-position"
           count={config.count}
